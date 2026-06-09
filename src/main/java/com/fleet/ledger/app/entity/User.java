@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -31,18 +32,14 @@ public class User extends Audit {
     @Enumerated(EnumType.STRING)
     private UserType userType;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", orphanRemoval = true)
-    private List<UserAddress> userAddress;
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "user", orphanRemoval = true)
+    private UserAddress userAddress;
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "Id=" + Id +
-                ", lastName='" + lastName + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", mobileNo='" + mobileNo + '\'' +
-                ", emailId='" + emailId + '\'' +
-                ", userAddress=" + userAddress +
-                '}';
-    }
+    @OneToMany(mappedBy = "driver")
+    private List<Trip> driver = new ArrayList<>();
+
+    @OneToMany(mappedBy = "customer")
+    private List<Trip> customer = new ArrayList<>();
+
+
 }

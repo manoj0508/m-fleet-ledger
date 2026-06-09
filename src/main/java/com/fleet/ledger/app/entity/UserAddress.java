@@ -22,7 +22,7 @@ public class UserAddress extends Audit {
 
     private String pincode;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "used_id")
     private User user;
 

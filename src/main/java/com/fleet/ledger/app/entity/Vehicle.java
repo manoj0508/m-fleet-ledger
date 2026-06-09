@@ -6,6 +6,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "Vehicle")
 @Getter
@@ -33,16 +36,8 @@ public class Vehicle extends Audit {
     @Column(name = "vehicleNo", nullable = false)
     private String vehicleNo;
 
-    @Override
-    public String toString() {
-        return "Vehicle{" +
-                "Id=" + Id +
-                ", name='" + name + '\'' +
-                ", vehicleType='" + vehicleType + '\'' +
-                ", vehicleCategory='" + vehicleCategory + '\'' +
-                ", seatingCapacity=" + seatingCapacity +
-                ", bodyType=" + bodyType +
-                ", vehicleNo='" + vehicleNo + '\'' +
-                '}';
-    }
+    @OneToMany(mappedBy = "vehicle")
+    private List<Trip> trip = new ArrayList<>();
+
+
 }
