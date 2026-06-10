@@ -8,7 +8,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -67,4 +66,12 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(user);
     }
 
+
+    @DeleteMapping(params = "userId")
+    @Operation(summary = "delete existing user by user id")
+    public ResponseEntity deleteUser(Integer userId) {
+
+        userService.deleteUser(userId);
+        return ResponseEntity.ok(HttpStatus.OK);
+    }
 }

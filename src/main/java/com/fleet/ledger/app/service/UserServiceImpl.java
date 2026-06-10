@@ -101,5 +101,10 @@ public class UserServiceImpl implements UserService {
         return userResponseList;
     }
 
+    @Override
+    public void deleteUser(Integer userId) {
+        userRepository.deleteById(userId);
+    }
+
 
 }
