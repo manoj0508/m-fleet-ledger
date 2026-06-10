@@ -21,10 +21,6 @@ public class UserRequest {
     @Schema(description = "email id of the user",example = "Manoj.k@gmail.com", requiredMode = Schema.RequiredMode.AUTO)
     private String email;
 
-    @Schema(description = "address id of the user which is already added as part of add address ",
-            example = "1", requiredMode = Schema.RequiredMode.REQUIRED)
-    private Integer addressId;
-
     @Schema(description = "User type to identify user is customer or driver",example = "CUSTOMER", requiredMode = Schema.RequiredMode.REQUIRED)
     private UserType userType;
 
@@ -35,7 +31,6 @@ public class UserRequest {
                 ", lName='" + lName + '\'' +
                 ", mobile='" + mobile + '\'' +
                 ", email='" + email + '\'' +
-                ", addressId=" + addressId +
                 ", userType=" + userType +
                 '}';
     }
