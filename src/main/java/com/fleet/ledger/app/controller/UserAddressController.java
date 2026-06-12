@@ -18,7 +18,7 @@ import java.util.List;
 @Tag(name = "User Address Management", description = "APIs for creating and managing user address")
 public class UserAddressController {
 
-    private UserAddressService addressService;
+    private final UserAddressService addressService;
 
     public UserAddressController(UserAddressService userAddressService) {
         this.addressService = userAddressService;

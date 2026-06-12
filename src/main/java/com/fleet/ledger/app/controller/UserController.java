@@ -20,7 +20,7 @@ import java.util.List;
 @Tag(name = "User Management", description = "APIs for creating and managing users")
 public class UserController {
 
-    private UserService userService;
+    private final UserService userService;
 
     @Autowired
     public UserController(UserService userService) {

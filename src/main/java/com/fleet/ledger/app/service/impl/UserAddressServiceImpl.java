@@ -1,4 +1,4 @@
-package com.fleet.ledger.app.service;
+package com.fleet.ledger.app.service.impl;
 
 import com.fleet.ledger.app.dto.UserAddressRequest;
 import com.fleet.ledger.app.dto.UserAddressResponse;
@@ -6,6 +6,7 @@ import com.fleet.ledger.app.entity.User;
 import com.fleet.ledger.app.entity.UserAddress;
 import com.fleet.ledger.app.repository.UserAddressRepository;
 import com.fleet.ledger.app.repository.UserRepository;
+import com.fleet.ledger.app.service.UserAddressService;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,9 +20,9 @@ public class UserAddressServiceImpl implements UserAddressService {
 
     private static final Logger logger = LoggerFactory.getLogger(UserAddressService.class);
 
-    private UserAddressRepository userAddressRepository;
+    private final UserAddressRepository userAddressRepository;
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     public UserAddressServiceImpl(UserAddressRepository userAddressRepository, UserRepository userRepository) {
         this.userAddressRepository = userAddressRepository;

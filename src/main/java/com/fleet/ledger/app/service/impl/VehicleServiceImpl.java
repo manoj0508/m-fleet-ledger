@@ -1,9 +1,10 @@
-package com.fleet.ledger.app.service;
+package com.fleet.ledger.app.service.impl;
 
 import com.fleet.ledger.app.dto.VehicleRequest;
 import com.fleet.ledger.app.dto.VehicleResponse;
 import com.fleet.ledger.app.entity.Vehicle;
 import com.fleet.ledger.app.repository.VehicleRepository;
+import com.fleet.ledger.app.service.VehicleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,7 @@ public class VehicleServiceImpl implements VehicleService {
     private static final Logger logger = LoggerFactory.getLogger(VehicleServiceImpl.class);
 
 
-    private VehicleRepository vehicleRepository;
+    private final VehicleRepository vehicleRepository;
 
     @Autowired
     public VehicleServiceImpl(VehicleRepository vehicleRepository) {

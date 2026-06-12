@@ -20,12 +20,6 @@ public record VehicleRequest(
 ) {
 
     public VehicleRequest {
-        if (name == null || name.isBlank()) {
-            throw new IllegalArgumentException("Name cannot be blank");
-        }
 
-        if (vehicleNo == null || vehicleNo.isBlank()) {
-            throw new IllegalArgumentException("Vehicle number cannot be blank");
-        }
     }
 }

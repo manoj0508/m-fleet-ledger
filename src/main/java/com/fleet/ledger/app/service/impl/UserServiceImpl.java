@@ -1,9 +1,10 @@
-package com.fleet.ledger.app.service;
+package com.fleet.ledger.app.service.impl;
 
 import com.fleet.ledger.app.dto.UserRequest;
 import com.fleet.ledger.app.dto.UserResponse;
 import com.fleet.ledger.app.entity.User;
 import com.fleet.ledger.app.repository.UserRepository;
+import com.fleet.ledger.app.service.UserService;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -13,7 +14,7 @@ import java.util.Optional;
 @Service
 public class UserServiceImpl implements UserService {
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;

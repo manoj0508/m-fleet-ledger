@@ -1,11 +1,15 @@
 package com.fleet.ledger.app.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 
 @Entity
+@Setter
+@Getter
 @Table(name = "Trip")
 public class Trip extends Audit{
 
@@ -14,7 +18,7 @@ public class Trip extends Audit{
     private Long Id;
 
     @Column(name = "tripId", nullable = false, unique = true)
-    private Long tripId;
+    private String tripId;
 
     private String source;
 
