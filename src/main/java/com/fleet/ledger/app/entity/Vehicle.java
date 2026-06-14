@@ -1,6 +1,7 @@
 package com.fleet.ledger.app.entity;
 
 import com.fleet.ledger.app.dto.BodyType;
+import com.fleet.ledger.app.dto.FuelType;
 import com.fleet.ledger.app.dto.SeatingCapacity;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -24,6 +25,9 @@ public class Vehicle extends Audit {
     private String vehicleType;
 
     private String vehicleCategory;
+
+    @Enumerated(EnumType.STRING)
+    private FuelType fuelType;
 
     @Column(name = "seatingCapacity", nullable = false)
     @Enumerated(EnumType.STRING)
