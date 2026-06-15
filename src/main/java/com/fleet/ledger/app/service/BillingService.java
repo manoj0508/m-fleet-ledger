@@ -10,5 +10,9 @@ public interface BillingService {
 
     void deleteBill(Long billId);
 
+    byte[] generateBillPdf(Long billId);
+
+    void generateBillPdfFileInPath(Long billId);
+
 
 }

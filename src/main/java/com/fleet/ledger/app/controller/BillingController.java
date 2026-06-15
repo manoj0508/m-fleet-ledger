@@ -2,7 +2,9 @@ package com.fleet.ledger.app.controller;
 
 import com.fleet.ledger.app.dto.TripBill;
 import com.fleet.ledger.app.service.BillingService;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,5 +39,27 @@ public class BillingController {
 
         billingService.deleteBill(billId);
         return ResponseEntity.ok(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/{billId}/pdf")
+    public ResponseEntity<byte[]> downloadBill(@PathVariable Long billId) {
+
+        byte[] pdf = billingService.generateBillPdf(billId);
+
+        return ResponseEntity.ok()
+                .header(
+                        HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename=bill-" + billId + ".pdf")
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(pdf);
+    }
+
+
+    @GetMapping("/file/{billId}/pdf")
+    public ResponseEntity saveBillFile(@PathVariable Long billId) {
+
+         billingService.generateBillPdfFileInPath(billId);
+
+        return ResponseEntity.ok(HttpStatus.CREATED);
     }
 }

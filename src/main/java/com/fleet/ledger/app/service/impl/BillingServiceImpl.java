@@ -9,6 +9,7 @@ import com.fleet.ledger.app.entity.Vehicle;
 import com.fleet.ledger.app.repository.TripBillRepository;
 import com.fleet.ledger.app.repository.TripRepository;
 import com.fleet.ledger.app.service.BillingService;
+import com.fleet.ledger.app.service.InvoiceService;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -26,9 +27,12 @@ public class BillingServiceImpl implements BillingService {
 
     private TripRepository tripRepository;
 
-    public BillingServiceImpl(TripBillRepository billRepository, TripRepository tripRepository) {
+    private InvoiceService invoiceService;
+
+    public BillingServiceImpl(TripBillRepository billRepository, TripRepository tripRepository, InvoiceService invoiceService) {
         this.billRepository = billRepository;
         this.tripRepository = tripRepository;
+        this.invoiceService = invoiceService;
     }
 
 
@@ -47,7 +51,7 @@ public class BillingServiceImpl implements BillingService {
             FuelType fuelType = vehicle.getFuelType();
 
             Integer distance = trip.getDistance();
-            Integer baseFare = vehicleBaseFare.get(bodyType);
+            Integer baseFare = vehicleBaseFare.get(bodyType.toString());
 
             if (BodyType.HATCHBACK.equals(bodyType)) {
                 Integer distanceFare = (distance / 15) * 106;
@@ -87,4 +91,39 @@ public class BillingServiceImpl implements BillingService {
     public void deleteBill(Long billId) {
         billRepository.deleteById(billId);
     }
+
+    @Override
+    public byte[] generateBillPdf(Long billId) {
+        Bill bill = billRepository.findById(billId)
+                .orElseThrow(() -> new RuntimeException("Bill not found"));
+
+        Optional<Trip> tripOptional = tripRepository.findById(bill.getTripId());
+        Trip trip = null;
+        if(tripOptional.isPresent()){
+            trip = tripOptional.get();
+        }
+
+
+        byte[] pdf = invoiceService.generateBillPdf(bill, trip);
+
+        return pdf;
+    }
+
+    @Override
+    public void generateBillPdfFileInPath(Long billId) {
+        Bill bill = billRepository.findById(billId)
+                .orElseThrow(() -> new RuntimeException("Bill not found"));
+
+        Optional<Trip> tripOptional = tripRepository.findById(bill.getTripId());
+        Trip trip = null;
+        if(tripOptional.isPresent()){
+            trip = tripOptional.get();
+        }
+
+        String filePath = "BillInvoice.pdf";
+
+        invoiceService.saveBillPdfFile(bill,trip,filePath);
+
+    }
+
 }
