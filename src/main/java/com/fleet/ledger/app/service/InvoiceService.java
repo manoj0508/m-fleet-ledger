@@ -5,6 +5,7 @@ import com.fleet.ledger.app.entity.Trip;
 import com.lowagie.text.*;
 import com.lowagie.text.Font;
 import com.lowagie.text.Rectangle;
+import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
@@ -16,6 +17,9 @@ import java.awt.*;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.text.NumberFormat;
+import java.util.Locale;
 
 
 @Component
@@ -68,22 +72,13 @@ public class InvoiceService {
         document.add(new Paragraph(" "));
         document.add(sectionTitle("Trip Information"));
         document.add(tripInfo(trip));
-
-        document.add(new Paragraph(" "));
-        document.add(sectionTitle("Vehicle Information"));
         document.add(vehicleInfo(trip));
-
-        document.add(new Paragraph(" "));
-        document.add(sectionTitle("Driver Information"));
         document.add(driverInfo(trip));
-
-        document.add(new Paragraph(" "));
-        document.add(sectionTitle("Customer Information"));
         document.add(customerInfo(trip));
 
         document.add(new Paragraph(" "));
         document.add(sectionTitle("Charge Details"));
-        document.add(sectionCharges(bill));
+        document.add(sectionCharges(bill, trip));
 
         invoiceFooter(document);
         document.close();
@@ -140,7 +135,22 @@ public class InvoiceService {
         document.add(footer);
     }
 
-    private PdfPTable sectionCharges(Bill bill)  {
+    private PdfPTable sectionCharges(Bill bill, Trip trip)  {
+        NumberFormat currency =
+                NumberFormat.getCurrencyInstance(new Locale("en", "IN"));
+        BaseFont baseFont =null;
+        try {
+            baseFont = BaseFont.createFont(
+                    "src/main/resources/static/NotoSans-Regular.ttf",
+                    BaseFont.IDENTITY_H,
+                    BaseFont.EMBEDDED
+            );
+
+        }catch (IOException ex){
+            logger.error(ex.getMessage());
+        }
+
+        Font unicodeFont = new Font(baseFont, 12);
         Font headerFont =
                 new Font(Font.HELVETICA, 12, Font.BOLD);
 
@@ -152,37 +162,46 @@ public class InvoiceService {
                 new PdfPCell(new Phrase("Description", headerFont));
 
         PdfPCell c2 =
-                new PdfPCell(new Phrase("Amount (₹)", headerFont));
+                new PdfPCell(new Phrase("Amount (Rs)", headerFont));
 
         c1.setBackgroundColor(Color.LIGHT_GRAY);
         c2.setBackgroundColor(Color.LIGHT_GRAY);
 
         table.addCell(c1);
         table.addCell(c2);
+        Integer driverCharge = 0;
+        if(trip.getDistance() < 200){
+            driverCharge = 400;
+        }else if (trip.getDistance() > 200){
+            driverCharge = 500;
+        }
+       Integer  baseCharge = bill.getTariffCharge() - driverCharge;
+        Integer fuelCharge = (trip.getDistance() / 15) * 106;
 
-        table.addCell("Tariff Charge");
-        table.addCell("₹ " + bill.getTariffCharge());
+        Integer Total = baseCharge + fuelCharge + driverCharge;
+        table.addCell("Base Charge");
+        table.addCell(new Phrase(currency.format(baseCharge), unicodeFont));
 
         table.addCell("Driver Charge");
-        table.addCell("₹ " + bill.getDriverCharge());
+        table.addCell(new Phrase(currency.format(driverCharge), unicodeFont));
 
-        table.addCell("Toll");
-        table.addCell("₹ " + bill.getToll());
+        table.addCell("Fuel Charge");
+        table.addCell(new Phrase(currency.format(fuelCharge), unicodeFont));
+
+        table.addCell("Toll Tax");
+        table.addCell(new Phrase(currency.format(bill.getToll()), unicodeFont));
 
         table.addCell("Parking");
-        table.addCell("₹ " + bill.getParking());
+        table.addCell(new Phrase(currency.format(bill.getParking()), unicodeFont));
 
-        Font totalFont =
-                new Font(Font.HELVETICA, 12, Font.BOLD);
+        table.addCell("Vehicle cleaning");
+        table.addCell(new Phrase(currency.format(0), unicodeFont));
 
-        table.addCell(
-                new PdfPCell(new Phrase("TOTAL", totalFont)));
+        Font totalFont = new Font(Font.HELVETICA, 12, Font.BOLD);
 
-        table.addCell(
-                new PdfPCell(
-                        new Phrase(
-                                "₹ " + bill.getTotal(),
-                                totalFont)));
+        table.addCell(new PdfPCell(new Phrase("TOTAL", totalFont)));
+
+        table.addCell(new PdfPCell(new Phrase(currency.format(Total), unicodeFont)));
 
         return table;
     }
@@ -243,11 +262,6 @@ public class InvoiceService {
         table.addCell("Vehicle Type");
         table.addCell(trip.getVehicle().getVehicleType());
 
-        table.addCell("Seating Capacity");
-        table.addCell(
-                String.valueOf(
-                        trip.getVehicle().getSeatingCapacity()));
-
         return table;
     }
 
@@ -264,12 +278,6 @@ public class InvoiceService {
 
         table.addCell("Journey Date");
         table.addCell(String.valueOf(trip.getJourneyDate()));
-
-        table.addCell("Start Time");
-        table.addCell(String.valueOf(trip.getJourneyStartTime()));
-
-        table.addCell("End Time");
-        table.addCell(String.valueOf(trip.getJourneyEndTime()));
 
         table.addCell("Total Distance");
         table.addCell(trip.getDistance() + " KM");
