@@ -21,6 +21,8 @@ public record TripResponse(
 
         Integer distance,
 
+        TripType tripType,
+
         VehicleResponse vehicle,
 
         UserResponse driver,

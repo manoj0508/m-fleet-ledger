@@ -15,6 +15,8 @@ public interface UserService {
 
     List<UserResponse> getUsers(String mobileNo);
 
+    List<UserResponse> getAllUsers();
+
     void deleteUser(Integer userId);
 
 

@@ -40,7 +40,8 @@ public record TripRequest(
         Integer driverId,
 
         @NotNull
-        Integer customerId
+        Integer customerId,
 
+        TripType tripType
 ) {
 }

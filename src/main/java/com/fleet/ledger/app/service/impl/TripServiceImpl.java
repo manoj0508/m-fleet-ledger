@@ -54,6 +54,7 @@ public class TripServiceImpl implements TripService {
             trip.setJourneyDate(tripRequest.journeyDate());
             trip.setJourneyStartTime(tripRequest.journeyStartTime());
             trip.setJourneyEndTime(tripRequest.journeyEndTime());
+            trip.setTripType(tripRequest.tripType());
 
             User customer = userRepository.getReferenceById(tripRequest.customerId());
             trip.setCustomer(customer);
@@ -83,6 +84,7 @@ public class TripServiceImpl implements TripService {
                         trip.getJourneyStartTime(),
                         trip.getJourneyEndTime(),
                         trip.getDistance(),
+                        trip.getTripType(),
 
                         new VehicleResponse(
                                 trip.getVehicle().getId(),

@@ -1,5 +1,6 @@
 package com.fleet.ledger.app.service;
 
+import com.fleet.ledger.app.dto.TripType;
 import com.fleet.ledger.app.entity.Bill;
 import com.fleet.ledger.app.entity.Trip;
 import com.lowagie.text.*;
@@ -27,7 +28,7 @@ public class InvoiceService {
 
     private static final Logger logger = LoggerFactory.getLogger(InvoiceService.class);
 
-    private static final String invoiceTile = "Manoj Transport Service";
+    private static final String invoiceTile = "Mishu Transport Service";
     private static final String invoiceFooter = "Thank you for choosing our transport service.";
 
 
@@ -48,7 +49,7 @@ public class InvoiceService {
     }
 
 
-    public void saveBillPdfFile(Bill bill, Trip trip,String filePath) {
+    public void saveBillPdfFile(Bill bill, Trip trip, String filePath) {
 
         try {
             Document document = new Document();
@@ -135,10 +136,10 @@ public class InvoiceService {
         document.add(footer);
     }
 
-    private PdfPTable sectionCharges(Bill bill, Trip trip)  {
+    private PdfPTable sectionCharges(Bill bill, Trip trip) {
         NumberFormat currency =
                 NumberFormat.getCurrencyInstance(new Locale("en", "IN"));
-        BaseFont baseFont =null;
+        BaseFont baseFont = null;
         try {
             baseFont = BaseFont.createFont(
                     "src/main/resources/static/NotoSans-Regular.ttf",
@@ -146,7 +147,7 @@ public class InvoiceService {
                     BaseFont.EMBEDDED
             );
 
-        }catch (IOException ex){
+        } catch (IOException ex) {
             logger.error(ex.getMessage());
         }
 
@@ -170,15 +171,24 @@ public class InvoiceService {
         table.addCell(c1);
         table.addCell(c2);
         Integer driverCharge = 0;
-        if(trip.getDistance() < 200){
+        if (trip.getDistance() < 200) {
             driverCharge = 400;
-        }else if (trip.getDistance() > 200){
+        } else if (trip.getDistance() > 200) {
             driverCharge = 500;
         }
-       Integer  baseCharge = bill.getTariffCharge() - driverCharge;
-        Integer fuelCharge = (trip.getDistance() / 15) * 106;
+        Integer baseCharge = bill.getTariffCharge() - driverCharge;
 
-        Integer Total = baseCharge + fuelCharge + driverCharge;
+        Float fuelRequired = (float) trip.getDistance() / 15;
+
+        if (trip.getTripType().equals(TripType.AC)) {
+            fuelRequired =  (float) trip.getDistance() / 13;
+        }
+
+        fuelRequired = Math.round(fuelRequired * 100) / 100.0f;
+
+        Float fuelCharge = fuelRequired * 106;
+
+        Float Total = baseCharge + fuelCharge + driverCharge;
         table.addCell("Base Charge");
         table.addCell(new Phrase(currency.format(baseCharge), unicodeFont));
 
@@ -275,6 +285,9 @@ public class InvoiceService {
 
         table.addCell("Destination");
         table.addCell(trip.getDestination());
+
+        table.addCell("Trip Type");
+        table.addCell(trip.getTripType().toString());
 
         table.addCell("Journey Date");
         table.addCell(String.valueOf(trip.getJourneyDate()));

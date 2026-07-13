@@ -1,5 +1,6 @@
 package com.fleet.ledger.app.entity;
 
+import com.fleet.ledger.app.dto.TripType;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,7 +12,7 @@ import java.time.LocalTime;
 @Setter
 @Getter
 @Table(name = "Trip")
-public class Trip extends Audit{
+public class Trip extends Audit {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,11 +31,14 @@ public class Trip extends Audit{
 
     private LocalTime journeyEndTime;
 
+    @Enumerated(EnumType.STRING)
+    private TripType tripType = TripType.NON_AC;
+
     @Column(name = "distance", nullable = false)
     private Integer distance;
 
     @ManyToOne
-    @JoinColumn(name = "vehicle_id",nullable = false)
+    @JoinColumn(name = "vehicle_id", nullable = false)
     private Vehicle vehicle;
 
     @ManyToOne
@@ -44,4 +48,11 @@ public class Trip extends Audit{
     @ManyToOne
     @JoinColumn(name = "customer_id", nullable = false)
     private User customer;
+
+    @PrePersist
+    void prePersist() {
+        if (null == tripType) {
+            tripType = TripType.NON_AC;
+        }
+    }
 }

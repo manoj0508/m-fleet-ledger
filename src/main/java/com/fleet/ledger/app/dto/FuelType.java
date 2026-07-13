@@ -12,7 +12,7 @@ public enum FuelType {
         this.fuelType = fuelType;
     }
 
-    public String getfuelType() {
+    public String getFuelType() {
         return fuelType;
     }
 

@@ -86,6 +86,28 @@ public class UserServiceImpl implements UserService {
         UserResponse userResponse = null;
 
         List<User> userList = userRepository.findByMobileNo(mobileNo);
+        mapUserResponse(userList, userResponseList);
+
+        return userResponseList;
+    }
+
+
+    @Override
+    public List<UserResponse> getAllUsers() {
+        List<UserResponse> userResponseList = new ArrayList<>();
+        List<User> allUsers = userRepository.findAll();
+        mapUserResponse(allUsers, userResponseList);
+        return userResponseList;
+    }
+
+    @Override
+    public void deleteUser(Integer userId) {
+        userRepository.deleteById(userId);
+    }
+
+
+    private static void mapUserResponse(List<User> userList, List<UserResponse> userResponseList) {
+        UserResponse userResponse;
         if (null != userList) {
 
             for (User user : userList) {
@@ -98,14 +120,5 @@ public class UserServiceImpl implements UserService {
             }
 
         }
-
-        return userResponseList;
     }
-
-    @Override
-    public void deleteUser(Integer userId) {
-        userRepository.deleteById(userId);
-    }
-
-
 }

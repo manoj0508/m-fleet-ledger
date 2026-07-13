@@ -66,6 +66,18 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(user);
     }
 
+    @GetMapping("/all")
+    @Operation(summary = "get all users details")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User fetched successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid request"),
+            @ApiResponse(responseCode = "500", description = "server error")
+    })
+    public ResponseEntity<List<UserResponse>> getAllUsers(){
+        List<UserResponse> user = userService.getAllUsers();
+        return ResponseEntity.status(HttpStatus.OK).body(user);
+    }
+
 
     @DeleteMapping(params = "userId")
     @Operation(summary = "delete existing user by user id")
